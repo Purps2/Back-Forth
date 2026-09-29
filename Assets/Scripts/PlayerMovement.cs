@@ -4,6 +4,8 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
+    public float fastFallForce = 10f;
+    public Transform shadow;
 
     public float jumpBufferTime = 0.1f;
 
@@ -11,10 +13,10 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput;
     private float jumpBufferCounter;
-    private float jumpDelayCounter;
 
     private bool jumpPressed;
     private bool isGrounded;
+    private bool fastFallPressed;
 
     void Start()
     {
@@ -36,6 +38,20 @@ public class PlayerMovement : MonoBehaviour
             0.15f
         );
 
+        // Placing Shadow on the ground
+
+        RaycastHit shadowHit;
+
+        if (Physics.Raycast(
+            transform.position + Vector3.up * 0.05f,
+            Vector3.down,
+            out shadowHit,
+            20f))
+        {
+            Vector3 vector3 = shadowHit.point + Vector3.up * 0.01f;
+            shadow.position = vector3;
+        }
+
         // Player pressed Space
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -48,17 +64,18 @@ public class PlayerMovement : MonoBehaviour
             jumpBufferCounter -= Time.deltaTime;
         }
 
-        // Count down delay between jumps
-        if (jumpDelayCounter > 0)
-        {
-            jumpDelayCounter -= Time.deltaTime;
-        }
-
         // Buffered jump is ready
         if (jumpBufferCounter > 0 && isGrounded)
         {
             jumpPressed = true;
             jumpBufferCounter = 0;
+        }
+
+        // Fast fall set to ctrl
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            Debug.Log("Ctrl was Pressed!");
+            fastFallPressed = true;
         }
     }
 
@@ -70,6 +87,18 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity.y,
             0f
         );
+
+        // Perform a fast fall 
+        if (fastFallPressed)
+        {
+            rb.linearVelocity = new Vector3(
+                rb.linearVelocity.x,
+                -5f,
+                rb.linearVelocity.z
+                );
+
+            fastFallPressed = false;
+        }
 
         // Actually perform the jump
         if (jumpPressed)
@@ -83,6 +112,7 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
             jumpPressed = false;
+
         }
     }
 }
