@@ -4,7 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
-    public float fastFallForce = 10f;
+    public float fastFallForce = 30f;
     public Transform shadow;
 
     public float jumpBufferTime = 0.1f;
