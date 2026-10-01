@@ -10,25 +10,31 @@ public class Gem : MonoBehaviour
         {
             Debug.Log("Gem Collected!");
 
+            if(gemManager != null)
+            {
+                if (gemManager.rightGemActive)
+                {
+                    gemManager.RightGemCollected();
+                }
+                else if (gemManager.leftGemActive)
+                {
+                    gemManager.LeftGemCollected();
+                }
+            }
+
             Destroy(gameObject);
         }
-        else;
+        else
         {
-            Debug.Log("Gem hit something else!");
+            Debug.Log("Gem missed!");
 
-            gemManager.GemMissed();
+            if (gemManager != null)
+            {
+                gemManager.GemMissed();
+            }
 
             Destroy(gameObject);
         }
     }
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
 }
